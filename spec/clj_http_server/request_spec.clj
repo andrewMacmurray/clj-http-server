@@ -33,4 +33,14 @@
           (it "parses params correctly"
               (let [request (run-parser "GET /hello?foo=bar&hello=world HTTP/1.1\r\n\r\n")
                     params (:params request)]
-                (should= {"foo" "bar", "hello" "world"} params))))
+                (should= {"foo" "bar", "hello" "world"} params)))
+
+          (it "parses headers correctly"
+              (let [request (run-parser "GET / HTTP/1.1\r\nConnection: Keep-Alive\r\nContent-Type: text/html\r\n\r\n")
+                    headers (:headers request)]
+                (should= {"Content-Type" "text/html", "Connection" "Keep-Alive"} headers)))
+
+          (it "parses body correctly"
+              (let [request (run-parser "GET / HTTP/1.1\r\nContent-Length: 11\r\n\r\nhello world")
+                    body (:body request)]
+                (should= "hello world" body))))
