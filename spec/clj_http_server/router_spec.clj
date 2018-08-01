@@ -12,12 +12,26 @@
    :headers {}
    :body "bar"})
 
-(def routes {"/foo" foo-handler
-             "/bar" bar-handler})
+(defn foo-options-handler [request]
+  {:status 200
+   :headers {"Allow" "GET,PUT"}
+   :body ""})
 
-(def foo-request     {:method "GET"  :uri "/foo"})
-(def bar-request     {:method "POST" :uri "/bar"})
-(def unknown-request {:method "GET"  :uri "/unknown"})
+(def routes
+  [(OPTIONS "/foo" foo-options-handler)
+   (GET "/bar" bar-handler)
+   (GET "/foo" foo-handler)])
+
+(def foo-request     {:method "GET" :uri "/foo"})
+(def foo-options     {:method "OPTIONS" :uri "/foo"})
+(def bar-request     {:method "GET" :uri "/bar"})
+(def unknown-request {:method "GET" :uri "/unknown"})
+
+(describe "GET"
+          (it "associates a handler with a uri and http GET method"
+              (let [route (GET "/foo" foo-handler)
+                    expected {:uri "/foo" :method "GET" :handler foo-handler}]
+                (should= route expected))))
 
 (describe "respond"
           (it "creates correct response for /foo request"
@@ -27,6 +41,10 @@
           (it "creates correct response for /bar request"
               (let [response (respond routes bar-request)]
                 (should= (bar-handler bar-request) response)))
+
+          (it "creates correct response for /foo options request"
+              (let [response (respond routes foo-options)]
+                (should= (foo-options-handler foo-options) response)))
 
           (it "creates a 404 response if route not found"
               (let [response (respond routes unknown-request)]

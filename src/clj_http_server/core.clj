@@ -7,4 +7,4 @@
   [& args]
   (do
     (println "starting server")
-    (server/serve 5000 (cob-routes "cob_spec/public"))))
+    (server/serve 5000 (cob-routes "public"))))

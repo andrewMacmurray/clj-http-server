@@ -1,6 +1,7 @@
 (ns clj-http-server.server-spec
   (:require [speclj.core :refer :all]
             [clojure.java.io :as io]
+            [clj-http-server.router :refer :all]
             [clj-http-server.server :as server]
             [clj-http-server.response :as response])
   (:import [java.io ByteArrayInputStream ByteArrayOutputStream]))
@@ -8,7 +9,7 @@
 (def get-foo "GET /foo HTTP/1.1\r\n\r\n")
 (def foo-response {:status 200 :headers {} :body "foo!"})
 (defn foo-handler [_] foo-response)
-(def routes {"/foo" foo-handler})
+(def routes [(GET "/foo" foo-handler)])
 
 (defn socket-in [in]
   (io/reader (ByteArrayInputStream. (.getBytes in))))
