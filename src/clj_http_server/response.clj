@@ -1,5 +1,5 @@
 (ns clj-http-server.response
-  (:require [clj-http-server.reasons :refer [reasons]]
+  (:require [clj-http-server.constants :refer [response-reasons]]
             [clojure.string :as str]))
 
 (def clrf "\r\n")
@@ -7,7 +7,7 @@
 (defn- status-line [status]
   (str/join " " ["HTTP/1.1"
                  status
-                 (get reasons status)]))
+                 (get response-reasons status)]))
 
 (defn- add-body-header [headers body]
   (if (empty? body)

@@ -1,14 +1,12 @@
 (ns clj-http-server.request
-  (:require [clojure.string :as str]))
-
-(defn- not-empty? [x]
-  (not (empty? x)))
+  (:require [clojure.string :as str]
+            [clj-http-server.utils :as utils]))
 
 (defn- request-line [reader]
   (str/split (.readLine reader) #" " 3))
 
 (defn- header-lines [reader]
-  (take-while not-empty? (repeatedly #(.readLine reader))))
+  (take-while utils/not-empty? (repeatedly #(.readLine reader))))
 
 (defn- read-body [reader length]
   (let [chrs (char-array length)]
@@ -18,15 +16,11 @@
 (defn- parse-uri [full-uri]
   (str/split full-uri #"\?" 2))
 
-(defn- string-to-map [pattern string]
-  (let [[k v] (str/split string pattern 2)]
-    {k v}))
-
 (defn- parse-param [query-param]
-  (string-to-map #"=" query-param))
+  (utils/string-to-map #"=" query-param))
 
 (defn- parse-header [header]
-  (string-to-map #":\s*" header))
+  (utils/string-to-map #":\s*" header))
 
 (defn- parse-params [query-string]
   (let [params (str/split query-string #"&")]
