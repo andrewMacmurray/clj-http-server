@@ -1,8 +1,8 @@
 (ns clj-http-server.response
-  (:require [clj-http-server.constants :refer [response-reasons]]
-            [clojure.string :as str]))
-
-(def clrf "\r\n")
+  (:require [clj-http-server.constants :refer [response-reasons clrf]]
+            [clojure.string :as str]
+            [clj-http-server.utils :refer :all])
+  (:import [java.io ByteArrayOutputStream]))
 
 (defn- status-line [status]
   (str/join " " ["HTTP/1.1"
@@ -27,11 +27,28 @@
            seq
            (map build-header)
            (str/join clrf)
-           append-clrf))))
+           append-clrf) "")))
+
+(defn- write-str [out x]
+  (.write out (.getBytes x) 0 (count x)))
+
+(defn- write-bytes [out b]
+  (.write out b 0 (alength b)))
+
+(defn- write [out x]
+  (if (bytes? x)
+    (write-bytes out x)
+    (write-str   out x)))
+
+(defn- body-bytes [body]
+  (if (bytes? body) body (.getBytes body)))
 
 (defn build-response [{:keys [status headers body]}]
-  (str (status-line status)
-       clrf
-       (build-headers headers body)
-       clrf
-       body))
+  (let [out (ByteArrayOutputStream.)
+        write (partial write out)]
+    (write (status-line status))
+    (write clrf)
+    (write (build-headers headers body))
+    (write clrf)
+    (write body)
+    (.toByteArray out)))

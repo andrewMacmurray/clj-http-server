@@ -20,10 +20,9 @@
 (describe "server"
           (it "processes a request from socket in"
               (let [response (server/run-request routes (socket-in get-foo))]
-                (should= (response/build-response foo-response) response)))
+                (should= (String. (response/build-response foo-response)) (String. response))))
 
           (it "writes a response to socket out"
-              (let [out (ByteArrayOutputStream.)
-                    socket-out (io/writer out)]
-                (server/write-response "response\r\n" socket-out)
-                (should= "response\r\n" (.toString out)))))
+              (let [socket-out (ByteArrayOutputStream.)]
+                (server/write-response (.getBytes "response\r\n") socket-out)
+                (should= "response\r\n" (.toString socket-out)))))

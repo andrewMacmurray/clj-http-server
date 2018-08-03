@@ -44,12 +44,12 @@
 (describe "static handler"
           (it "serves a static file if file is present"
               (with-redefs [is-file? (fn [_] true)
-                            slurp identity]
+                            read-file identity]
                 (should= static-file-response ((static-handler "/public") static-file))))
 
           (it "returns a not found response if file not present"
               (with-redefs [is-file? (fn [_] false)
-                            slurp identity]
+                            read-file identity]
                 (should= not-found ((static-handler "/public") static-file)))))
 
 (describe "respond"

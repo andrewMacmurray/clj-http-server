@@ -34,3 +34,11 @@
   (let [dot-index (str/last-index-of path ".")
         last-index (.length path)]
     (if (nil? dot-index) "" (subs path dot-index last-index))))
+
+(defn bytes?
+  "checks if value is byte array"
+  [x]
+  (if (nil? x)
+    false
+    (= (Class/forName "[B")
+       (.getClass x))))

@@ -2,7 +2,9 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clj-http-server.constants :refer [content-types]]
-            [clj-http-server.utils :refer :all]))
+            [clj-http-server.utils :refer :all])
+  (:import [java.io ByteArrayOutputStream]
+           [java.nio.file Paths Files]))
 
 ;; default responses
 
@@ -14,6 +16,9 @@
 
 ;; default static directory handler
 
+(defn read-file [path]
+  (Files/readAllBytes (.toPath (io/file path))))
+
 (defn- content-type-header [path]
   (let [content-type (get content-types (file-ext path))]
     (if (nil? content-type)
@@ -23,7 +28,7 @@
 (defn- serve-file [path]
   {:status 200
    :headers (content-type-header path)
-   :body (slurp path)})
+   :body (read-file path)})
 
 (defn is-file? [path]
   (let [file (io/file path)]
