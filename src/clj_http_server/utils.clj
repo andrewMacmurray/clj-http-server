@@ -52,6 +52,22 @@
        (.toPath)
        (Files/readAllBytes)))
 
+(defn write-file
+  "writes contents to file"
+  [path contents]
+  (with-open [writer (io/writer path)]
+    (.write writer contents)))
+
+(defn delete-file
+  "deletes file at path"
+  [path]
+  (io/delete-file path true))
+
+(defn file-exists?
+  "checks if file exists"
+  [path]
+  (.exists (io/file path)))
+
 (defn to-html-link
   "creates a html link for given path"
   [path]

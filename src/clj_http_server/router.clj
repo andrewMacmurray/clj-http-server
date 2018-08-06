@@ -47,6 +47,12 @@
 (defn GET [uri handler]
   {:uri uri :method "GET" :handler handler})
 
+(defn PUT [uri handler]
+  {:uri uri :method "PUT" :handler handler})
+
+(defn DELETE [uri handler]
+  {:uri uri :method "DELETE" :handler handler})
+
 (defn HEAD [uri handler]
   {:uri uri :method "HEAD" :handler handler})
 
