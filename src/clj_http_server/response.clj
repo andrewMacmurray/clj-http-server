@@ -36,9 +36,9 @@
   (.write out b 0 (alength b)))
 
 (defn- write [out x]
-  (if (bytes? x)
-    (write-bytes out x)
-    (write-str   out x)))
+  (cond
+    (bytes? x)  (write-bytes out x)
+    (string? x) (write-str out x)))
 
 (defn- body-bytes [body]
   (if (bytes? body) body (.getBytes body)))

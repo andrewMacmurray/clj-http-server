@@ -31,8 +31,10 @@
 
 (def foo-request     {:method "GET" :uri "/foo"})
 (def foo-options     {:method "OPTIONS" :uri "/foo"})
+(def foo-delete      {:method "DELETE" :uri "/foo"})
 (def bar-request     {:method "GET" :uri "/bar"})
 (def static-file     {:method "GET" :uri "/file1"})
+(def bogus           {:method "FOO" :uri "/"})
 (def unknown-request {:method "GET" :uri "/unknown"})
 
 (describe "GET"
@@ -64,6 +66,14 @@
           (it "creates correct response for /foo options request"
               (let [response (respond routes foo-options)]
                 (should= (foo-options-handler foo-options) response)))
+
+          (it "creates a method not allowed response if uri maches not allowed OPTIONS"
+              (let [response (respond routes foo-delete)]
+                (should= method-not-allowed response)))
+
+          (it "creates a method not allowed response for a bogus method"
+              (let [response (respond routes bogus)]
+                (should= method-not-allowed response)))
 
           (it "creates a 404 response if route not found"
               (let [response (respond routes unknown-request)]

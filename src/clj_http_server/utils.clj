@@ -1,5 +1,7 @@
 (ns clj-http-server.utils
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.java.io :as io])
+  (:import [java.nio.file Files]))
 
 ;; general
 
@@ -42,3 +44,24 @@
     false
     (= (Class/forName "[B")
        (.getClass x))))
+
+(defn read-file
+  "reads a file into bytes"
+  [path]
+  (->> (io/file path)
+       (.toPath)
+       (Files/readAllBytes)))
+
+(defn to-html-link
+  "creates a html link for given path"
+  [path]
+  (format "<a href='/%s'>%s</a>" path path))
+
+(defn file-links
+  "creates html links for each file on the path"
+  [path]
+  (->> (io/file path)
+       (.list)
+       (seq)
+       (map to-html-link)
+       (str/join "\n")))
