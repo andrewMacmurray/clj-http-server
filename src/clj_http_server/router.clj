@@ -30,6 +30,9 @@
 (def server-error
   {:status 500 :headers {} :body "internal server error"})
 
+(defn respond-ok [_]
+  {:status 200})
+
 ;; default static directory handler
 
 (defn- content-type-header [path]
