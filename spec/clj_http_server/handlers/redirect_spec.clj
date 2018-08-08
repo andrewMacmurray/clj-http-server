@@ -1,6 +1,6 @@
-(ns clj-http-server.routes.redirect-spec
+(ns clj-http-server.handlers.redirect-spec
   (:require [speclj.core :refer :all]
-            [clj-http-server.routes.redirect :refer :all]))
+            [clj-http-server.handlers.redirect :refer :all]))
 
 (describe "redirect-to"
           (it "creates a handler to redirect request to a path"

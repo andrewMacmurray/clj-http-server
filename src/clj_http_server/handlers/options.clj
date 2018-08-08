@@ -1,4 +1,4 @@
-(ns clj-http-server.routes.options)
+(ns clj-http-server.handlers.options)
 
 (defn allow [headers options]
   (assoc headers "Allow" options))

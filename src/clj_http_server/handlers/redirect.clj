@@ -1,4 +1,4 @@
-(ns clj-http-server.routes.redirect)
+(ns clj-http-server.handlers.redirect)
 
 (defn redirect-to [path]
   (fn [_]

@@ -1,4 +1,4 @@
-(ns clj-http-server.routes.tea)
+(ns clj-http-server.handlers.tea)
 
 (defn coffee [request]
   {:status 418

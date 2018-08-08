@@ -1,4 +1,4 @@
-(ns clj-http-server.routes.static
+(ns clj-http-server.handlers.static
   (:require [clj-http-server.utils.file :refer :all]
             [clj-http-server.router :refer :all]))
 

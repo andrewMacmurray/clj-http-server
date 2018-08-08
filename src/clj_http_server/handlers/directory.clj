@@ -1,4 +1,4 @@
-(ns clj-http-server.routes.directory
+(ns clj-http-server.handlers.directory
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))
 

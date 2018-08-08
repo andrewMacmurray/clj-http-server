@@ -1,11 +1,11 @@
 (ns clj-http-server.cob-routes
   (:require [clj-http-server.router :refer :all]
             [clj-http-server.middleware :as middleware]
-            [clj-http-server.routes.static :refer :all]
-            [clj-http-server.routes.options :refer :all]
-            [clj-http-server.routes.directory :refer :all]
-            [clj-http-server.routes.redirect :refer :all]
-            [clj-http-server.routes.tea :refer :all]))
+            [clj-http-server.handlers.static :refer :all]
+            [clj-http-server.handlers.options :refer :all]
+            [clj-http-server.handlers.directory :refer :all]
+            [clj-http-server.handlers.redirect :refer :all]
+            [clj-http-server.handlers.tea :refer :all]))
 
 (defn cob-routes [public-dir auth-config]
   (let [with-static (partial middleware/with-static public-dir)

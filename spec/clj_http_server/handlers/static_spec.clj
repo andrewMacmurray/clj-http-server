@@ -1,7 +1,7 @@
-(ns clj-http-server.routes.static-spec
+(ns clj-http-server.handlers.static-spec
   (:require [speclj.core :refer :all]
             [clj-http-server.utils.file :refer :all]
-            [clj-http-server.routes.static :refer :all]))
+            [clj-http-server.handlers.static :refer :all]))
 
 (def put-file-request {:method "PUT"
                        :body "some text"

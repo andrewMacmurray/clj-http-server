@@ -1,6 +1,6 @@
-(ns clj-http-server.routes.options-spec
+(ns clj-http-server.handlers.options-spec
   (:require [speclj.core :refer :all]
-            [clj-http-server.routes.options :refer :all]))
+            [clj-http-server.handlers.options :refer :all]))
 
 (describe "allow-default-options"
           (it "responds with default options in allow header"
