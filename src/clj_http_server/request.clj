@@ -1,12 +1,12 @@
 (ns clj-http-server.request
   (:require [clojure.string :as str]
-            [clj-http-server.utils :as utils]))
+            [clj-http-server.utils.function :refer :all]))
 
 (defn- request-line [reader]
   (str/split (.readLine reader) #" " 3))
 
 (defn- header-lines [reader]
-  (take-while utils/not-empty? (repeatedly #(.readLine reader))))
+  (take-while not-empty? (repeatedly #(.readLine reader))))
 
 (defn- read-body [reader length]
   (let [chrs (char-array length)]
@@ -16,38 +16,25 @@
 (defn- parse-uri [full-uri]
   (str/split full-uri #"\?" 2))
 
-(defn- parse-param [query-param]
-  (utils/string-to-map #"=" query-param))
-
-(defn- parse-header [header]
-  (utils/string-to-map #":\s*" header))
-
 (defn- parse-params [query-string]
-  (let [params (str/split query-string #"&")]
-    (reduce
-     (fn [acc v] (merge (parse-param v) acc))
-     {}
-     params)))
+  (-> query-string
+      (str/split #"&")
+      (split-map #"=")))
 
 (defn- parse-params? [query-string]
-  (if (empty? query-string)
-    {}
-    (parse-params query-string)))
+  (if (empty? query-string) {} (parse-params query-string)))
 
 (defn- parse-headers [reader]
-  (let [raw-headers (header-lines reader)]
-    (reduce
-     (fn [acc v] (merge (parse-header v) acc))
-     {}
-     raw-headers)))
+  (-> reader
+      (header-lines)
+      (split-map #":\s*")))
 
 (defn- content-length [headers]
   (Integer/parseInt (get headers "Content-Length")))
 
 (defn- parse-body [headers reader]
   (if (contains? headers "Content-Length")
-    (read-body reader (content-length headers))
-    nil))
+    (read-body reader (content-length headers))))
 
 (defn parse-request [reader]
   (let [[method full-uri version] (request-line reader)

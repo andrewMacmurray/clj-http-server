@@ -1,6 +1,6 @@
 (ns clj-http-server.router-spec
   (:require [speclj.core :refer :all]
-            [clj-http-server.utils :refer :all]
+            [clj-http-server.utils.file :refer :all]
             [clj-http-server.router :refer :all]))
 
 (defn foo-handler [request]
@@ -27,7 +27,7 @@
   [(OPTIONS "/foo" foo-options-handler)
    (GET "/bar" bar-handler)
    (GET "/foo" foo-handler)
-   (static "/public" static-handler)])
+   (static "/public")])
 
 (def foo-request     {:method "GET" :uri "/foo"})
 (def foo-options     {:method "OPTIONS" :uri "/foo"})

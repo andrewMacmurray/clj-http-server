@@ -1,12 +1,12 @@
-(ns clj-http-server.cob-routes-speci
+(ns clj-http-server.cob-routes-spec
   (:require [clj-http-server.cob-routes :refer :all]
             [speclj.core :refer :all]
-            [clj-http-server.utils :refer :all]))
+            [clj-http-server.utils.file :refer :all]
+            [clj-http-server.utils.function :refer :all]))
 
-
-(describe "simple head"
+(describe "respond ok"
           (it "returns 200 for request"
-              (let [response (simple-head {})]
+              (let [response (respond-ok {})]
                 (should= 200 (:status response)))))
 
 (describe "allow-default-options"
@@ -29,17 +29,17 @@
 (describe "put static"
           (with-stubs)
           (it "saves a new file to the static directory"
-            (with-redefs [write-file (fn [_ _] nil)
-                          file-exists? (constantly false)]
-              (let [response (put-static put-file-request)]
-                (should= 201 (:status response)))))
+              (with-redefs [write-file (fn [_ _] nil)
+                            file-exists? (constantly false)]
+                (let [response (put-static put-file-request)]
+                  (should= 201 (:status response)))))
 
           (it "responds with 200 if the file already exists"
               (with-redefs [write-file (fn [_ _] nil)
-                            file-exists? (constantly true) ]
+                            file-exists? (constantly true)]
                 (let [response (put-static put-file-request)]
                   (should= 200 (:status response)))))
-          
+
           (it "saves the body of the request to a file"
               (with-redefs [write-file (stub :write-file-stub)
                             file-exists? (stub :file-exists-stub {:return false})]
