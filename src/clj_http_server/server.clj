@@ -3,9 +3,10 @@
             [clj-http-server.response :as response]
             [clj-http-server.router   :as router]
             [clj-http-server.request  :as request])
-  (:import [java.net ServerSocket]))
+  (:import [java.net ServerSocket]
+           [java.util.concurrent Executors]))
 
-(defn run-request [routes reader]
+(defn read-request [routes reader]
   (->> reader
        (request/parse-request)
        (router/respond routes)
@@ -15,12 +16,18 @@
   (.write writer response)
   (.flush writer))
 
+(defn- exec-request [routes sock]
+  (with-open [reader (io/reader sock)
+              writer (io/output-stream sock)]
+    (-> routes
+        (read-request reader)
+        (write-response writer))))
+
 (defn serve [port routes]
-  (with-open [server-sock (ServerSocket. port)]
+  (with-open [server-sock (ServerSocket. port)
+              thread-pool (Executors/newFixedThreadPool 20)]
     (loop []
-      (with-open [sock (.accept server-sock)
-                  reader (io/reader sock)
-                  writer (io/output-stream sock)]
-        (let [response (run-request routes reader)]
-          (write-response response writer)))
+      (let [sock    (.accept server-sock)
+            request (partial exec-request routes)]
+        (.execute thread-pool #(request sock)))
       (recur))))

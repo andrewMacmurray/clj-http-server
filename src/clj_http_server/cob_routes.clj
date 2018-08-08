@@ -4,6 +4,7 @@
             [clj-http-server.handlers.static :refer :all]
             [clj-http-server.handlers.options :refer :all]
             [clj-http-server.handlers.directory :refer :all]
+            [clj-http-server.handlers.parameters :refer :all]
             [clj-http-server.handlers.redirect :refer :all]
             [clj-http-server.handlers.tea :refer :all]))
 
@@ -16,6 +17,7 @@
      (GET     "/logs" (with-auth (with-static get-static)))
      (PUT     "/new_file.txt" (with-static put-static))
      (DELETE  "/new_file.txt" (with-static delete-static))
+     (GET     "/parameters" parameters)
      (HEAD    "/" respond-ok)
      (GET     "/" (with-static directory-links))
      (OPTIONS "/no_file_here.txt" allow-default-options)

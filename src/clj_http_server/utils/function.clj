@@ -9,14 +9,14 @@
   (not (empty? x)))
 
 (defn in?
-  "true if xs contains x"
-  [xs x]
-  (some #(= x %) xs))
+  "true if coll contains x"
+  [coll x]
+  (some #(= x %) coll))
 
 (defn find-first
   "returns first matching element in a collection"
-  [f xs]
-  (first (filter f xs)))
+  [f coll]
+  (first (filter f coll)))
 
 (defn string-to-map
   "splits a string into a key value pair based on a delimiter"
@@ -29,5 +29,10 @@
 
 (defn split-map
   "creates a map from a collection of strings separated by a delimiter"
-  [xs delimiter]
-  (reduce (combine-keys delimiter) {} xs))
+  [coll delimiter]
+  (reduce (combine-keys delimiter) {} coll))
+
+(defn update-map-values
+  "applies a function to each value in a map"
+  [coll f]
+  (reduce-kv (fn [m k v] (assoc m k (f v))) {} coll))

@@ -3,10 +3,7 @@
             [clj-http-server.utils.file :refer :all]
             [clj-http-server.handlers.static :refer :all]))
 
-(def put-file-request {:method "PUT"
-                       :body "some text"
-                       :uri "/file.txt"
-                       :static-dir "public"})
+(def put-file-request {:method "PUT" :body "some text" :uri "/file.txt" :static-dir "public"})
 
 (describe "put static"
           (with-stubs)
@@ -30,9 +27,7 @@
                   (should-have-invoked :file-exists-stub {:with ["public/file.txt"]})
                   (should-have-invoked :write-file-stub {:with ["public/file.txt" "some text"]})))))
 
-(def delete-file-request {:method "DELETE"
-                          :uri "/file.txt"
-                          :static-dir "public"})
+(def delete-file-request {:method "DELETE" :uri "/file.txt" :static-dir "public"})
 
 (describe "delete file"
           (with-stubs)

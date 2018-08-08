@@ -1,6 +1,7 @@
 (ns clj-http-server.request
   (:require [clojure.string :as str]
-            [clj-http-server.utils.function :refer :all]))
+            [clj-http-server.utils.function :refer :all])
+  (:import [java.net URLDecoder]))
 
 (defn- request-line [reader]
   (str/split (.readLine reader) #" " 3))
@@ -16,10 +17,16 @@
 (defn- parse-uri [full-uri]
   (str/split full-uri #"\?" 2))
 
+(defn- decode-param [param]
+  (-> param
+      (str/trim)
+      (URLDecoder/decode "UTF-8")))
+
 (defn- parse-params [query-string]
   (-> query-string
       (str/split #"&")
-      (split-map #"=")))
+      (split-map #"=")
+      (update-map-values decode-param)))
 
 (defn- parse-params? [query-string]
   (if (empty? query-string) {} (parse-params query-string)))
