@@ -1,33 +1,32 @@
 (ns clj-http-server.server
   (:require [clojure.java.io :as io]
             [clj-http-server.response :as response]
-            [clj-http-server.router   :as router]
             [clj-http-server.request  :as request])
   (:import [java.net ServerSocket]
            [java.util.concurrent Executors]))
 
-(defn read-request [routes reader]
+(defn read-request [app-handler reader]
   (->> reader
        (request/parse-request)
-       (router/respond routes)
+       (app-handler)
        (response/build-response)))
 
 (defn write-response [response writer]
   (.write writer response)
   (.flush writer))
 
-(defn- exec-request [routes sock]
+(defn- exec-request [app-handler sock]
   (with-open [reader (io/reader sock)
               writer (io/output-stream sock)]
-    (-> routes
+    (-> app-handler
         (read-request reader)
         (write-response writer))))
 
-(defn serve [port routes]
+(defn serve [port app-handler]
   (with-open [server-sock (ServerSocket. port)
               thread-pool (Executors/newFixedThreadPool 20)]
     (loop []
       (let [sock    (.accept server-sock)
-            request (partial exec-request routes)]
+            request (partial exec-request app-handler)]
         (.execute thread-pool #(request sock)))
       (recur))))

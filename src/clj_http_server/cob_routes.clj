@@ -1,5 +1,7 @@
 (ns clj-http-server.cob-routes
-  (:require [clj-http-server.router :refer :all]
+  (:require [clj-http-server.routing.router :refer :all]
+            [clj-http-server.routing.response :refer :all]
+            [clj-http-server.routing.route :refer :all]
             [clj-http-server.middleware :as middleware]
             [clj-http-server.handlers.static :refer :all]
             [clj-http-server.handlers.options :refer :all]
@@ -9,6 +11,9 @@
             [clj-http-server.handlers.eat-cookie :refer :all]
             [clj-http-server.handlers.redirect :refer :all]
             [clj-http-server.handlers.tea :refer :all]))
+
+(defn- STATIC [public-dir]
+  (static public-dir get-static))
 
 (defn cob-routes [public-dir auth-config]
   (let [with-static (partial middleware/with-static public-dir)
@@ -27,4 +32,8 @@
      (OPTIONS "/no_file_here.txt" allow-default-options)
      (OPTIONS "/file1"            allow-default-options)
      (OPTIONS "/logs"             allow-restricted-options)
-     (static  public-dir)]))
+     (STATIC  public-dir)]))
+
+(defn cob-app [public-dir auth-config]
+  (fn [request]
+    (respond (cob-routes public-dir auth-config) request)))

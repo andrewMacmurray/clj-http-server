@@ -1,78 +1,15 @@
-(ns clj-http-server.router
+(ns clj-http-server.routing.router
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
+            [clj-http-server.routing.response :refer :all]
+            [clj-http-server.routing.route :refer :all]
+            [clj-http-server.handlers.static :refer :all]
             [clj-http-server.utils.file :refer :all]
             [clj-http-server.utils.function :refer :all])
   (:import [java.io ByteArrayOutputStream]
            [java.nio.file Paths Files]))
 
-(def content-types {".txt"  "text/plain"
-                    ".html" "text/html"
-                    ".png"  "image/png"
-                    ".gif"  "image/gif"
-                    ".jpeg" "image/jpeg"})
-
-(def allowed-methods #{"GET"
-                       "OPTIONS"
-                       "PUT"
-                       "POST"
-                       "HEAD"
-                       "DELETE"
-                       "PATCH"})
-;; default responses
-
-(def not-found
-  {:status 404 :headers {} :body "not found"})
-
-(def method-not-allowed
-  {:status 405 :headers {} :body "method not allowed"})
-
-(def server-error
-  {:status 500 :headers {} :body "internal server error"})
-
-(defn respond-ok [_]
-  {:status 200})
-
-;; default static directory handler
-
-(defn- content-type-header [path]
-  (let [content-type (get content-types (file-ext path))]
-    (if (nil? content-type)
-      {}
-      {"Content-Type" content-type})))
-
-(defn serve-file [path]
-  {:status 200
-   :headers (content-type-header path)
-   :body (read-file path)})
-
-(defn static-handler [public-dir]
-  (fn [request]
-    (let [path (str public-dir (:uri request))]
-      (if (is-file? path)
-        (serve-file path) not-found))))
-
-;; individual route config
-(defn- route [method]
-  (fn [uri handler]
-    {:uri uri :method method :handler handler}))
-
-(def GET (route "GET"))
-
-(def PUT (route "PUT"))
-
-(def DELETE (route "DELETE"))
-
-(def HEAD (route "HEAD"))
-
-(def OPTIONS (route "OPTIONS"))
-
-(defn static [static-dir]
-  {:static-dir static-dir
-   :method "GET"
-   :handler (static-handler static-dir)})
-
-;; route responder
+(def allowed-methods #{"GET" "OPTIONS" "PUT" "POST" "HEAD" "DELETE" "PATCH"})
 
 (defn- static-method? [method]
   (or
@@ -128,7 +65,7 @@
 (defn- run-request [route request]
   (try
     (run-request-with-fallbacks route request)
-    (catch Exception e (do (print e) server-error))))
+    (catch Exception e)))
 
 (defn respond [routes request]
   (let [handle (match-route routes request)]

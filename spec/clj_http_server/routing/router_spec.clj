@@ -1,7 +1,10 @@
-(ns clj-http-server.router-spec
+(ns clj-http-server.routing.router-spec
   (:require [speclj.core :refer :all]
             [clj-http-server.utils.file :refer :all]
-            [clj-http-server.router :refer :all]))
+            [clj-http-server.routing.response :refer :all]
+            [clj-http-server.routing.route :refer :all]
+            [clj-http-server.handlers.static :refer :all]
+            [clj-http-server.routing.router :refer :all]))
 
 (defn foo-handler [request]
   {:status 200
@@ -27,7 +30,7 @@
   [(OPTIONS "/foo" foo-options-handler)
    (GET "/bar" bar-handler)
    (GET "/foo" foo-handler)
-   (static "/public")])
+   (static "/public" get-static)])
 
 (def foo-request     {:method "GET" :uri "/foo"})
 (def foo-options     {:method "OPTIONS" :uri "/foo"})
@@ -47,12 +50,12 @@
           (it "serves a static file if file is present"
               (with-redefs [is-file? (fn [_] true)
                             read-file identity]
-                (should= static-file-response ((static-handler "/public") static-file))))
+                (should= static-file-response ((get-static "/public") static-file))))
 
           (it "returns a not found response if file not present"
               (with-redefs [is-file? (fn [_] false)
                             read-file identity]
-                (should= not-found ((static-handler "/public") static-file)))))
+                (should= not-found ((get-static "/public") static-file)))))
 
 (describe "respond"
           (it "creates correct response for /foo request"

@@ -11,16 +11,19 @@
   (str/starts-with? cookie "type="))
 
 (defn- get-type-cookie [all-cookies]
-  (let [find-cookie (partial find-first type-cookie?)]
+  (let [find-type-cookie (partial find-first type-cookie?)]
     (-> all-cookies
         (str/split #";")
-        (find-cookie))))
+        (find-type-cookie))))
+
+(defn- parse-cookie [request]
+  (-> request
+      (get-in [:headers "Cookie"])
+      (get-type-cookie)
+      (get-cookie-value)))
 
 (defn- render-cookie-value [request]
-  (let [cookies     (get-in request [:headers "Cookie"])
-        type-cookie (get-type-cookie cookies)
-        cookie-val  (get-cookie-value type-cookie)]
-    (str "mmmm " cookie-val)))
+  (str "mmmm " (parse-cookie request)))
 
 (defn eat-cookie [request]
   {:status 200
