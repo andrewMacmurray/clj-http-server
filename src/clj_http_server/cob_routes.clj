@@ -21,7 +21,7 @@
     [(GET     "/coffee"           coffee)
      (GET     "/redirect"         redirect-home)
      (GET     "/tea"              tea)
-     (GET     "/logs"             (with-auth (with-static get-static)))
+     (GET     "/logs"             (with-auth (get-static public-dir)))
      (PUT     "/new_file.txt"     (with-static put-static))
      (DELETE  "/new_file.txt"     (with-static delete-static))
      (GET     "/parameters"       parameters)
