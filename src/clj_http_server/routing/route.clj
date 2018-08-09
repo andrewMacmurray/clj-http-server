@@ -10,6 +10,8 @@
 
 (def POST (make-route "POST"))
 
+(def PATCH (make-route "PATCH"))
+
 (def DELETE (make-route "DELETE"))
 
 (def HEAD (make-route "HEAD"))

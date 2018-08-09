@@ -11,6 +11,7 @@
                        401 "Unauthorized"
                        404 "Not Found"
                        405 "Method Not Allowed"
+                       412 "Precondition Failed"
                        416 "Range Not Satisfiable"})
 
 (defn- status-line [status]

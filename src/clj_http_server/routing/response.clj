@@ -6,6 +6,9 @@
 (def method-not-allowed
   {:status 405 :headers {} :body "method not allowed"})
 
+(def precondition-failed
+  {:status 412 :headers {} :body "precondition failed"})
+
 (def server-error
   {:status 500 :headers {} :body "internal server error"})
 
