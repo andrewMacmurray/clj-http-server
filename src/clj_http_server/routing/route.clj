@@ -8,6 +8,8 @@
 
 (def PUT (make-route "PUT"))
 
+(def POST (make-route "POST"))
+
 (def DELETE (make-route "DELETE"))
 
 (def HEAD (make-route "HEAD"))

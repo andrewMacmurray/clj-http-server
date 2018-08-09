@@ -7,13 +7,11 @@
             [clj-http-server.handlers.options :refer :all]
             [clj-http-server.handlers.directory :refer :all]
             [clj-http-server.handlers.parameters :refer :all]
+            [clj-http-server.handlers.cat-form :refer :all]
             [clj-http-server.handlers.cookie :refer :all]
             [clj-http-server.handlers.eat-cookie :refer :all]
             [clj-http-server.handlers.redirect :refer :all]
             [clj-http-server.handlers.tea :refer :all]))
-
-(defn- STATIC [public-dir]
-  (static public-dir get-static))
 
 (defn cob-routes [public-dir auth-config]
   (let [with-static (partial middleware/with-static public-dir)
@@ -27,12 +25,16 @@
      (GET     "/parameters"       parameters)
      (GET     "/cookie"           cookie)
      (GET     "/eat_cookie"       eat-cookie)
+     (GET     "/cat-form/data"    cat-form)
+     (PUT     "/cat-form/data"    cat-form)
+     (POST    "/cat-form"         cat-form)
+     (DELETE  "/cat-form/data"    cat-form)
      (HEAD    "/"                 respond-ok)
      (GET     "/"                 (with-static directory-links))
      (OPTIONS "/no_file_here.txt" allow-default-options)
      (OPTIONS "/file1"            allow-default-options)
      (OPTIONS "/logs"             allow-restricted-options)
-     (STATIC  public-dir)]))
+     (static  public-dir          get-static)]))
 
 (defn cob-app [public-dir auth-config]
   (fn [request]
