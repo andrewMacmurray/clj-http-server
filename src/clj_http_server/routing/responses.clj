@@ -1,4 +1,4 @@
-(ns clj-http-server.routing.response)
+(ns clj-http-server.routing.responses)
 
 (def not-found
   {:status 404 :headers {} :body "not found"})

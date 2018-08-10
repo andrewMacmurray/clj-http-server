@@ -1,5 +1,5 @@
 (ns clj-http-server.handlers.patch-content
-  (:require [clj-http-server.routing.response :refer :all]
+  (:require [clj-http-server.routing.responses :refer :all]
             [clj-http-server.utils.sha1 :refer :all]
             [clj-http-server.utils.file :refer :all]))
 

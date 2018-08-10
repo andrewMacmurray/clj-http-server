@@ -3,7 +3,7 @@
             [clj-http-server.utils.function :refer :all]
             [clj-http-server.handlers.partial :refer :all]
             [clojure.string :as str]
-            [clj-http-server.routing.response :refer :all]))
+            [clj-http-server.routing.responses :refer :all]))
 
 (def content-types {".txt"  "text/plain"
                     ".html" "text/html"

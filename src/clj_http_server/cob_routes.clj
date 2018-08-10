@@ -1,19 +1,19 @@
 (ns clj-http-server.cob-routes
   (:require [clj-http-server.routing.router :refer :all]
-            [clj-http-server.routing.response :refer :all]
+            [clj-http-server.routing.responses :refer :all]
             [clj-http-server.routing.route :refer :all]
             [clj-http-server.middleware.static :refer [with-static]]
             [clj-http-server.middleware.basic-auth :refer [with-basic-auth]]
-            [clj-http-server.handlers.static :refer :all]
-            [clj-http-server.handlers.options :refer :all]
-            [clj-http-server.handlers.directory :refer :all]
-            [clj-http-server.handlers.patch-content :refer :all]
-            [clj-http-server.handlers.parameters :refer :all]
-            [clj-http-server.handlers.cat-form :refer :all]
-            [clj-http-server.handlers.cookie :refer :all]
-            [clj-http-server.handlers.eat-cookie :refer :all]
-            [clj-http-server.handlers.redirect :refer :all]
-            [clj-http-server.handlers.tea :refer :all]))
+            [clj-http-server.handlers.static :refer [get-static put-static delete-static]]
+            [clj-http-server.handlers.options :refer [allow-default-options allow-restricted-options]]
+            [clj-http-server.handlers.directory :refer [directory-links]]
+            [clj-http-server.handlers.patch-content :refer [patch-content]]
+            [clj-http-server.handlers.parameters :refer [parameters]]
+            [clj-http-server.handlers.cat-form :refer [cat-form]]
+            [clj-http-server.handlers.cookie :refer [cookie]]
+            [clj-http-server.handlers.eat-cookie :refer [eat-cookie]]
+            [clj-http-server.handlers.redirect :refer [redirect-home]]
+            [clj-http-server.handlers.tea :refer [tea coffee]]))
 
 (defn cob-routes [public-dir auth-config]
   (let [with-static (partial with-static public-dir)

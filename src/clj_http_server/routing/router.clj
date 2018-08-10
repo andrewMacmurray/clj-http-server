@@ -1,7 +1,7 @@
 (ns clj-http-server.routing.router
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clj-http-server.routing.response :refer :all]
+            [clj-http-server.routing.responses :refer :all]
             [clj-http-server.routing.route :refer :all]
             [clj-http-server.handlers.static :refer :all]
             [clj-http-server.utils.file :refer :all]

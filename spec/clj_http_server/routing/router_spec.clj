@@ -1,7 +1,7 @@
 (ns clj-http-server.routing.router-spec
   (:require [speclj.core :refer :all]
             [clj-http-server.utils.file :refer :all]
-            [clj-http-server.routing.response :refer :all]
+            [clj-http-server.routing.responses :refer :all]
             [clj-http-server.routing.route :refer :all]
             [clj-http-server.handlers.static :refer :all]
             [clj-http-server.routing.router :refer :all]))
