@@ -18,12 +18,12 @@
   (let [content-type (get content-types (file-ext path))]
     (if content-type {"Content-Type" content-type} {})))
 
-(defn serve-file [path]
+(defn- serve-file [path]
   {:status 200
    :headers (content-type-header path)
    :body (read-file path)})
 
-(defn serve [request]
+(defn- serve [request]
   (if (partial-request? request)
     (serve-partial request)
     (serve-file (get-path request))))
