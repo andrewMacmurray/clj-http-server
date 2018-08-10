@@ -24,19 +24,19 @@
 (def static-file-response
   {:status 200
    :headers {}
-   :body "/public/file1"})
+   :body "public/file1"})
 
 (def routes
   [(OPTIONS "/foo" foo-options-handler)
    (GET "/bar" bar-handler)
    (GET "/foo" foo-handler)
-   (static "/public" get-static)])
+   (static get-static)])
 
 (def foo-request     {:method "GET" :uri "/foo"})
 (def foo-options     {:method "OPTIONS" :uri "/foo"})
 (def foo-delete      {:method "DELETE" :uri "/foo"})
 (def bar-request     {:method "GET" :uri "/bar"})
-(def static-file     {:method "GET" :uri "/file1"})
+(def static-file     {:method "GET" :uri "/file1" :static-dir "public"})
 (def bogus           {:method "FOO" :uri "/"})
 (def unknown-request {:method "GET" :uri "/unknown"})
 
@@ -50,12 +50,12 @@
           (it "serves a static file if file is present"
               (with-redefs [is-file? (fn [_] true)
                             read-file identity]
-                (should= static-file-response ((get-static "/public") static-file))))
+                (should= static-file-response (get-static static-file))))
 
           (it "returns a not found response if file not present"
               (with-redefs [is-file? (fn [_] false)
                             read-file identity]
-                (should= not-found ((get-static "/public") static-file)))))
+                (should= not-found (get-static static-file)))))
 
 (describe "respond"
           (it "creates correct response for /foo request"

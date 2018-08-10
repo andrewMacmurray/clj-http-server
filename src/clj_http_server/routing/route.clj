@@ -18,7 +18,7 @@
 
 (def OPTIONS (make-route "OPTIONS"))
 
-(defn static [static-dir static-handler]
-  {:static-dir static-dir
+(defn static [static-handler]
+  {:static-request true
    :method "GET"
-   :handler (static-handler static-dir)})
+   :handler static-handler})

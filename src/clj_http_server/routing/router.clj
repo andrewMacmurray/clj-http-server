@@ -19,7 +19,7 @@
 (defn- static-request? [method route]
   (and
    (static-method? method)
-   (not-nil? (:static-dir route))))
+   (:static-request route)))
 
 (defn- matching-route? [uri method route]
   (and

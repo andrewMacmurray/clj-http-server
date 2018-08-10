@@ -25,6 +25,16 @@
        (.toPath)
        (Files/readAllBytes)))
 
+(defn read-partial
+  "reads portion of a file into bytes"
+  [path start end]
+  (let [buffer-size (inc (- end start))
+        buffer (byte-array buffer-size)]
+    (with-open [stream (io/input-stream path)]
+      (.skip stream start)
+      (.read stream buffer))
+    buffer))
+
 (defn write-file
   "writes contents to file"
   [path contents]
@@ -35,8 +45,3 @@
   "deletes file at path"
   [path]
   (io/delete-file path :quiet))
-
-(defn file-exists?
-  "checks if file exists"
-  [path]
-  (.exists (io/file path)))

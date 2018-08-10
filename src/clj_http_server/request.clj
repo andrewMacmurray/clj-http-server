@@ -37,7 +37,7 @@
       (split-map #":\s*")))
 
 (defn- content-length [headers]
-  (Integer/parseInt (get headers "Content-Length")))
+  (read-string (get headers "Content-Length")))
 
 (defn- parse-body [headers reader]
   (if (contains? headers "Content-Length")

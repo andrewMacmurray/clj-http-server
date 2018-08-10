@@ -1,5 +1,8 @@
 (ns clj-http-server.handlers.static
   (:require [clj-http-server.utils.file :refer :all]
+            [clj-http-server.utils.function :refer :all]
+            [clj-http-server.handlers.partial :refer :all]
+            [clojure.string :as str]
             [clj-http-server.routing.response :refer :all]))
 
 (def content-types {".txt"  "text/plain"
@@ -7,6 +10,9 @@
                     ".png"  "image/png"
                     ".gif"  "image/gif"
                     ".jpeg" "image/jpeg"})
+
+(defn- get-path [{:keys [static-dir uri]}]
+  (str static-dir uri))
 
 (defn- content-type-header [path]
   (let [content-type (get content-types (file-ext path))]
@@ -17,21 +23,25 @@
    :headers (content-type-header path)
    :body (read-file path)})
 
-(defn get-static [public-dir]
-  (fn [request]
-    (let [path (str public-dir (:uri request))]
-      (if (is-file? path)
-        (serve-file path) not-found))))
+(defn serve [request]
+  (if (partial-request? request)
+    (serve-partial request)
+    (serve-file (get-path request))))
 
-(defn put-static [{:keys [uri static-dir body]}]
-  (let [path (str static-dir uri)
-        file-exists (file-exists? path)]
-    (write-file path body)
+(defn get-static [request]
+  (let [path (get-path request)]
+    (if (is-file? path)
+      (serve request) not-found)))
+
+(defn put-static [request]
+  (let [path (get-path request)
+        file-exists (is-file? path)]
+    (write-file path (:body request))
     (if file-exists
       {:status 200}
       {:status 201})))
 
-(defn delete-static [{:keys [uri static-dir]}]
-  (let [path (str static-dir uri)]
+(defn delete-static [request]
+  (let [path (get-path request)]
     (delete-file path)
     {:status 200}))

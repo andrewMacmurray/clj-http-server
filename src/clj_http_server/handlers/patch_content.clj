@@ -9,7 +9,8 @@
 (defn- patch-headers [request]
   (let [uri  (:uri request)
         etag (get-if-match request)]
-    {"Content-Location" uri "ETag" etag}))
+    {"Content-Location" uri
+     "ETag" etag}))
 
 (defn- file-path [{:keys [static-dir uri]}]
   (str static-dir uri))
@@ -32,6 +33,6 @@
 (defn patch-content [request]
   (let [path (file-path request)]
     (cond
-      (not (file-exists? path)) not-found
+      (not (is-file? path)) not-found
       (not (hashes-match? request)) precondition-failed
       :else (do-patch request))))

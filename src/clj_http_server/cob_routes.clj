@@ -20,7 +20,7 @@
     [(GET     "/coffee"            coffee)
      (GET     "/redirect"          redirect-home)
      (GET     "/tea"               tea)
-     (GET     "/logs"              (with-auth (get-static public-dir)))
+     (GET     "/logs"              (with-auth (with-static get-static)))
      (PUT     "/new_file.txt"      (with-static put-static))
      (DELETE  "/new_file.txt"      (with-static delete-static))
      (GET     "/parameters"        parameters)
@@ -36,7 +36,7 @@
      (OPTIONS "/no_file_here.txt"  allow-default-options)
      (OPTIONS "/file1"             allow-default-options)
      (OPTIONS "/logs"              allow-restricted-options)
-     (static  public-dir           get-static)]))
+     (static                       (with-static get-static))]))
 
 (defn cob-app [public-dir auth-config]
   (fn [request]
