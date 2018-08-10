@@ -28,7 +28,7 @@
       (split-map #"=")
       (update-map-values decode-param)))
 
-(defn- parse-params? [query-string]
+(defn- params [query-string]
   (if (empty? query-string) {} (parse-params query-string)))
 
 (defn- parse-headers [reader]
@@ -45,12 +45,12 @@
 
 (defn parse-request [reader]
   (let [[method full-uri version] (request-line reader)
-        [uri params] (parse-uri full-uri)
+        [uri query-string] (parse-uri full-uri)
         headers (parse-headers reader)
         body (parse-body headers reader)]
     {:method method
      :version version
      :uri uri
      :headers headers
-     :params (parse-params? params)
+     :params (params query-string)
      :body body}))
