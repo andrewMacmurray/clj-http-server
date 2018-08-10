@@ -1,6 +1,6 @@
 (ns clj-http-server.middleware.basic-auth-spec
   (:require [clj-http-server.middleware.basic-auth :refer :all]
-            [clj-http-server.utils.encoding :refer :all]
+            [clj-http-server.utils.base64 :refer :all]
             [speclj.core :refer :all]))
 
 (defn handler [request]

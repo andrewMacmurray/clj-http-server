@@ -1,4 +1,4 @@
-(ns clj-http-server.utils.encoding
+(ns clj-http-server.utils.base64
   (:import [java.util Base64]))
 
 (defn encode

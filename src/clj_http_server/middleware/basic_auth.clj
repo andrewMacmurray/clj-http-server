@@ -1,6 +1,6 @@
 (ns clj-http-server.middleware.basic-auth
   (:require [clojure.string :as str]
-            [clj-http-server.utils.encoding :refer :all]))
+            [clj-http-server.utils.base64 :refer :all]))
 
 (defn- parse-basic [credentials]
   (-> credentials
