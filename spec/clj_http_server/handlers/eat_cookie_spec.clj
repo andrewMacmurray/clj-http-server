@@ -4,6 +4,6 @@
 
 (describe "eat cookie"
           (it "responds with mmmm plus the value of the type cookie"
-              (let [request {:headers {"Cookie" "type=chocolate"}}
+              (let [request {:headers {"Cookie" "type=twiglets"}}
                     response (eat-cookie request)]
-                (should= "mmmm chocolate" (:body response)))))
+                (should= "mmmm twiglets" (:body response)))))
