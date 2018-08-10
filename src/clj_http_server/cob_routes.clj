@@ -2,7 +2,8 @@
   (:require [clj-http-server.routing.router :refer :all]
             [clj-http-server.routing.response :refer :all]
             [clj-http-server.routing.route :refer :all]
-            [clj-http-server.middleware :as middleware]
+            [clj-http-server.middleware.static :refer [with-static]]
+            [clj-http-server.middleware.basic-auth :refer [with-basic-auth]]
             [clj-http-server.handlers.static :refer :all]
             [clj-http-server.handlers.options :refer :all]
             [clj-http-server.handlers.directory :refer :all]
@@ -15,8 +16,8 @@
             [clj-http-server.handlers.tea :refer :all]))
 
 (defn cob-routes [public-dir auth-config]
-  (let [with-static (partial middleware/with-static public-dir)
-        with-auth   (partial middleware/with-auth auth-config)]
+  (let [with-static (partial with-static public-dir)
+        with-auth   (partial with-basic-auth auth-config)]
     [(GET     "/coffee"            coffee)
      (GET     "/redirect"          redirect-home)
      (GET     "/tea"               tea)
