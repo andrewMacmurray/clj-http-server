@@ -67,6 +67,7 @@
     (run-request-with-fallbacks route request)
     (catch Exception e server-error)))
 
-(defn respond [routes request]
-  (let [handle (match-route routes request)]
-    (run-request handle request)))
+(defn respond [routes]
+  (fn [request]
+    (let [handle (match-route routes request)]
+      (run-request handle request))))

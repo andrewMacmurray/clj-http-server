@@ -3,7 +3,6 @@
             [clj-http-server.utils.file :refer :all]
             [clj-http-server.routing.responses :refer :all]
             [clj-http-server.routing.route :refer :all]
-            [clj-http-server.handlers.static :refer :all]
             [clj-http-server.routing.router :refer :all]))
 
 (defn foo-handler [request]
@@ -11,17 +10,17 @@
    :headers {}
    :body (:method request)})
 
-(defn bar-handler [request]
+(defn bar-handler [_]
   {:status 204
    :headers {}
    :body "bar"})
 
-(defn foo-options-handler [request]
+(defn foo-options-handler [_]
   {:status 200
    :headers {"Allow" "GET,PUT"}
    :body ""})
 
-(def static-file-response
+(defn get-static [_]
   {:status 200
    :headers {}
    :body "public/file1"})
@@ -38,7 +37,8 @@
 (def bar-request     {:method "GET" :uri "/bar"})
 (def static-file     {:method "GET" :uri "/file1" :static-dir "public"})
 (def bogus           {:method "FOO" :uri "/"})
-(def unknown-request {:method "GET" :uri "/unknown"})
+
+(def response-handler (respond routes))
 
 (describe "GET"
           (it "associates a handler with a uri and http GET method"
@@ -46,38 +46,27 @@
                     expected {:uri "/foo" :method "GET" :handler foo-handler}]
                 (should= route expected))))
 
-(describe "static handler"
-          (it "serves a static file if file is present"
-              (with-redefs [is-file? (fn [_] true)
-                            read-file identity]
-                (should= static-file-response (get-static static-file))))
-
-          (it "returns a not found response if file not present"
-              (with-redefs [is-file? (fn [_] false)
-                            read-file identity]
-                (should= not-found (get-static static-file)))))
-
 (describe "respond"
           (it "creates correct response for /foo request"
-              (let [response (respond routes foo-request)]
+              (let [response (response-handler foo-request)]
                 (should= (foo-handler foo-request) response)))
 
           (it "creates correct response for /bar request"
-              (let [response (respond routes bar-request)]
+              (let [response (response-handler bar-request)]
                 (should= (bar-handler bar-request) response)))
 
           (it "creates correct response for /foo options request"
-              (let [response (respond routes foo-options)]
+              (let [response (response-handler foo-options)]
                 (should= (foo-options-handler foo-options) response)))
 
           (it "creates a method not allowed response if uri maches not allowed OPTIONS"
-              (let [response (respond routes foo-delete)]
+              (let [response (response-handler foo-delete)]
                 (should= method-not-allowed response)))
 
           (it "creates a method not allowed response for a bogus method"
-              (let [response (respond routes bogus)]
+              (let [response (response-handler bogus)]
                 (should= method-not-allowed response)))
 
-          (it "creates a 404 response if route not found"
-              (let [response (respond routes unknown-request)]
-                (should= {:status 404 :headers {} :body "not found"} response))))
+          (it "matches the static handler if a specific route is not matched"
+              (let [response (response-handler static-file)]
+                (should= (get-static static-file) response))))
