@@ -39,9 +39,11 @@
    (OPTIONS "/logs"              allow-restricted-options)
    (static                       get-static)])
 
+(defn- cob-handler [auth-config]
+  (router/respond (cob-routes auth-config)))
+
 (defn app-handler [public-dir auth-config]
-  (->> (cob-routes auth-config)
-       (router/respond)
+  (->> (cob-handler auth-config)
        (with-allowed-methods)
        (with-content-type)
        (with-static public-dir)))

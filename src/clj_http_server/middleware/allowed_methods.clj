@@ -17,5 +17,4 @@
 (defn with-allowed-methods [handler]
   (fn [request]
     (if (bogus-request? request)
-      method-not-allowed
-      (handler request))))
+      method-not-allowed (handler request))))
