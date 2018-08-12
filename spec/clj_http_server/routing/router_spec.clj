@@ -36,7 +36,6 @@
 (def foo-delete      {:method "DELETE" :uri "/foo"})
 (def bar-request     {:method "GET" :uri "/bar"})
 (def static-file     {:method "GET" :uri "/file1" :static-dir "public"})
-(def bogus           {:method "FOO" :uri "/"})
 
 (def response-handler (respond routes))
 
