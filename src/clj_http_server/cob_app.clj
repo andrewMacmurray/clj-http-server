@@ -3,6 +3,8 @@
             [clj-http-server.routing.route :refer :all]
             [clj-http-server.routing.responses :refer [respond-ok]]
             [clj-http-server.middleware.static :refer [with-static]]
+            [clj-http-server.middleware.content-type :refer [with-content-type]]
+            [clj-http-server.middleware.allowed-methods :refer [with-allowed-methods]]
             [clj-http-server.middleware.basic-auth :refer [with-basic-auth]]
             [clj-http-server.handlers.static :refer [get-static put-static delete-static]]
             [clj-http-server.handlers.options :refer [allow-default-options allow-restricted-options]]
@@ -40,4 +42,6 @@
 (defn app-handler [public-dir auth-config]
   (->> (cob-routes auth-config)
        (router/respond)
+       (with-allowed-methods)
+       (with-content-type)
        (with-static public-dir)))

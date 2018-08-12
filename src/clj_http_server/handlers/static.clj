@@ -5,22 +5,11 @@
             [clojure.string :as str]
             [clj-http-server.routing.responses :refer :all]))
 
-(def content-types {".txt"  "text/plain"
-                    ".html" "text/html"
-                    ".png"  "image/png"
-                    ".gif"  "image/gif"
-                    ".jpeg" "image/jpeg"})
-
 (defn- get-path [{:keys [static-dir uri]}]
   (str static-dir uri))
 
-(defn- content-type-header [path]
-  (let [content-type (get content-types (file-ext path))]
-    (if content-type {"Content-Type" content-type} {})))
-
 (defn- serve-file [path]
   {:status 200
-   :headers (content-type-header path)
    :body (read-file path)})
 
 (defn- serve [request]

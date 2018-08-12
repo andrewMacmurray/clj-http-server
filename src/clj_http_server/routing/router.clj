@@ -9,8 +9,6 @@
   (:import [java.io ByteArrayOutputStream]
            [java.nio.file Paths Files]))
 
-(def allowed-methods #{"GET" "OPTIONS" "PUT" "POST" "HEAD" "DELETE" "PATCH"})
-
 (defn- static-method? [method]
   (or
    (= method "GET")
@@ -34,40 +32,28 @@
 (def not-allowed-handle
   {:handler (constantly method-not-allowed)})
 
-(defn- bogus-request? [request]
-  (let [method (:method request)]
-    (not (in? allowed-methods method))))
-
-(defn- options-fallback [uri routes]
+(defn- options-not-allowed [uri routes]
   (let [options (find-first (partial has-options? uri) routes)]
     (if options not-allowed-handle)))
 
-(defn- match-route [routes request]
-  (let [uri          (:uri request)
-        method       (:method request)
-        route-match  (partial matching-route? uri method)
+(defn- match-route [routes {:keys [uri method]}]
+  (let [route-match  (partial matching-route? uri method)
         static-match (partial static-request? method)
-        not-allowed  (options-fallback uri routes)]
+        not-allowed  (options-not-allowed uri routes)]
     (or
      (find-first route-match routes)
      (find-first static-match routes)
      not-allowed)))
 
-(defn- run-request-with-fallbacks [route request]
-  (let [bogus?    (bogus-request? request)
-        no-match? (nil? route)
-        handle    (:handler route)]
-    (cond
-      bogus?    method-not-allowed
-      no-match? not-found
-      :else     (handle request))))
+(defn- run-route [{handler :handler} request]
+  (if handler (handler request) not-found))
 
-(defn- run-request [route request]
+(defn- try-request [route request]
   (try
-    (run-request-with-fallbacks route request)
+    (run-route route request)
     (catch Exception e server-error)))
 
 (defn respond [routes]
   (fn [request]
-    (let [handle (match-route routes request)]
-      (run-request handle request))))
+    (let [route (match-route routes request)]
+      (try-request route request))))

@@ -63,10 +63,6 @@
               (let [response (response-handler foo-delete)]
                 (should= method-not-allowed response)))
 
-          (it "creates a method not allowed response for a bogus method"
-              (let [response (response-handler bogus)]
-                (should= method-not-allowed response)))
-
           (it "matches the static handler if a specific route is not matched"
               (let [response (response-handler static-file)]
                 (should= (get-static static-file) response))))
