@@ -7,6 +7,5 @@
 
 (defn -main
   [& args]
-  (do
-    (println "starting server")
-    (server/serve 5000 (app-handler "public" auth-config))))
+  (println "starting server")
+  (server/serve 5000 (app-handler "public" auth-config)))

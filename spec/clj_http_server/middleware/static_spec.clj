@@ -6,8 +6,8 @@
   {:status 200
    :body (:static-dir request)})
 
-(describe "with-static"
+(describe "with-static-dir"
           (it "adds static content directory to a reqest"
-              (let [new-handler (middleware/with-static "public" handler)
+              (let [new-handler (middleware/with-static-dir "public" handler)
                     response (new-handler {})]
                 (should= "public" (:body response)))))

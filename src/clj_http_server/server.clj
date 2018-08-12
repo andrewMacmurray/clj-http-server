@@ -1,17 +1,14 @@
 (ns clj-http-server.server
   (:require [clojure.java.io :as io]
             [clj-http-server.response :as response]
-            [clj-http-server.request  :as request]
-            [clj-http-server.utils.logging :refer :all])
+            [clj-http-server.request  :as request])
   (:import [java.net ServerSocket]
            [java.util.concurrent Executors]))
 
 (defn read-request [app-handler reader]
   (->> reader
        (request/parse-request)
-       (log-request)
        (app-handler)
-       (log-response)
        (response/build-response)))
 
 (defn write-response [response writer]

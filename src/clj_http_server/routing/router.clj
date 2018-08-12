@@ -39,14 +39,11 @@
      not-allowed)))
 
 (defn- run-route [{handler :handler} request]
-  (if handler (handler request) not-found))
-
-(defn- try-request [route request]
   (try
-    (run-route route request)
+    (if handler (handler request) not-found)
     (catch Exception e server-error)))
 
 (defn respond [routes]
   (fn [request]
     (let [route (match-route routes request)]
-      (try-request route request))))
+      (run-route route request))))
