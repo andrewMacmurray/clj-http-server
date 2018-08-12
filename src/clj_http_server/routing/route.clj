@@ -2,7 +2,9 @@
 
 (defn- make-route [method]
   (fn [uri handler]
-    {:uri uri :method method :handler handler}))
+    {:method method
+     :uri uri
+     :handler handler}))
 
 (def GET (make-route "GET"))
 
