@@ -1,8 +1,7 @@
 (ns clj-http-server.request
-  (:require [clojure.string :as str]))
-
-(defn- not-empty? [x]
-  (not (empty? x)))
+  (:require [clojure.string :as str]
+            [clj-http-server.utils.function :refer :all])
+  (:import [java.net URLDecoder]))
 
 (defn- request-line [reader]
   (str/split (.readLine reader) #" " 3))
@@ -18,51 +17,40 @@
 (defn- parse-uri [full-uri]
   (str/split full-uri #"\?" 2))
 
-(defn- string-to-map [pattern string]
-  (let [[k v] (str/split string pattern 2)]
-    {k v}))
-
-(defn- parse-param [query-param]
-  (string-to-map #"=" query-param))
-
-(defn- parse-header [header]
-  (string-to-map #":\s*" header))
+(defn- decode-param [param]
+  (-> param
+      (str/trim)
+      (URLDecoder/decode "UTF-8")))
 
 (defn- parse-params [query-string]
-  (let [params (str/split query-string #"&")]
-    (reduce
-     (fn [acc v] (merge (parse-param v) acc))
-     {}
-     params)))
+  (-> query-string
+      (str/split #"&")
+      (split-map #"=")
+      (update-map-values decode-param)))
 
-(defn- parse-params? [query-string]
-  (if (empty? query-string)
-    {}
-    (parse-params query-string)))
+(defn- params [query-string]
+  (if (empty? query-string) {} (parse-params query-string)))
 
 (defn- parse-headers [reader]
-  (let [raw-headers (header-lines reader)]
-    (reduce
-     (fn [acc v] (merge (parse-header v) acc))
-     {}
-     raw-headers)))
+  (-> reader
+      (header-lines)
+      (split-map #":\s*")))
 
 (defn- content-length [headers]
-  (Integer/parseInt (get headers "Content-Length")))
+  (read-string (get headers "Content-Length")))
 
 (defn- parse-body [headers reader]
   (if (contains? headers "Content-Length")
-    (read-body reader (content-length headers))
-    nil))
+    (read-body reader (content-length headers))))
 
 (defn parse-request [reader]
   (let [[method full-uri version] (request-line reader)
-        [uri params] (parse-uri full-uri)
+        [uri query-string] (parse-uri full-uri)
         headers (parse-headers reader)
         body (parse-body headers reader)]
     {:method method
      :version version
      :uri uri
      :headers headers
-     :params (parse-params? params)
+     :params (params query-string)
      :body body}))

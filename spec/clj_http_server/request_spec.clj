@@ -30,6 +30,12 @@
                     uri (:uri request)]
                 (should= "/hello" uri)))
 
+          (it "parses uri with encoded params correctly"
+              (let [params "Operators%20%3C%2C"
+                    expectedParams "Operators <,"
+                    request (run-parser (str "GET /hello?foo=" params))]
+                (should= {"foo" expectedParams} (:params request))))
+
           (it "parses params correctly"
               (let [request (run-parser "GET /hello?foo=bar&hello=world HTTP/1.1\r\n\r\n")
                     params (:params request)]
