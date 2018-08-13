@@ -6,9 +6,9 @@
 (describe "patch"
           (with-stubs)
           (it "responds with a 204 if patch successful"
-              (with-redefs [write-file   (stub :write-file-stub)
-                            read-file    (constantly (.getBytes "default content"))
-                            is-file? (constantly true)]
+              (with-redefs [write-file (stub :write-file-stub)
+                            read-file  (constantly (.getBytes "default content"))
+                            is-file?   (constantly true)]
                 (let [request {:headers {"If-Match" "dc50a0d27dda2eee9f65644cd7e4c9cf11de8bec"}
                                :uri "/patch-content.txt"
                                :body "patched content"
@@ -20,8 +20,8 @@
                             "ETag" "dc50a0d27dda2eee9f65644cd7e4c9cf11de8bec"} (:headers response)))))
 
           (it "responds with 404 if file doesn't exist"
-              (with-redefs [is-file? (constantly false)
-                            read-file    (constantly nil)]
+              (with-redefs [is-file?  (constantly false)
+                            read-file (constantly nil)]
                 (let [request {:headers {"If-Match" "dc50a0d27dda2eee9f65644cd7e4c9cf11de8bec"}
                                :uri "/unknown.txt"
                                :body "some content"
@@ -30,9 +30,9 @@
                   (should= 404 (:status response)))))
 
           (it "rejects patch request if hashes don't match"
-              (with-redefs [is-file? (constantly true)
-                            write-file   (fn [_ _] nil)
-                            read-file    (constantly (.getBytes "this file doesn't match the hash"))]
+              (with-redefs [is-file?   (constantly true)
+                            write-file (fn [_ _] nil)
+                            read-file  (constantly (.getBytes "this file doesn't match the hash"))]
                 (let [request {:headers {"If-Match" "dc50a0d27dda2eee9f65644cd7e4c9cf11de8bec"}
                                :uri "/patch-content.txt"
                                :body "some content"

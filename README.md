@@ -68,4 +68,4 @@ The core pieces of the application are:
 - `Handlers`
 - `Middleware`
 
-The `Request` and `Response` are clojure maps representing data about the request and response. Handlers are functions that take a Request map and return a Response map. And Middleware are functions that take a handler and return a new handler decorated with extra functionality (such as a modified request and response, or functionality to return a different response given a particular request)
+The `Request` and `Response` are clojure maps representing data about the request and response. Handlers are functions that take a Request map and return a Response map. And Middleware are functions that take a handler and return a new handler decorated with extra functionality (such as a modified request and response, or functionality to return a different response given a particular request).
