@@ -3,8 +3,8 @@
   :url "https://github.com/andrewMacmurray/clj-http-server"
   :license {:name "MIT"
             :url "https://opensource.org/licenses/MIT"}
-  :main clj-http-server.core
-  :aot [clj-http-server.core]
+  :main http-server.core
+  :aot [http-server.core]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [com.taoensso/timbre "4.10.0"]]
   :profiles {:dev {:dependencies [[speclj "3.3.2"]]}}
