@@ -10,9 +10,8 @@
                        "DELETE"
                        "PATCH"})
 
-(defn- bogus-request? [request]
-  (let [method (:method request)]
-    (not (in? allowed-methods method))))
+(defn- bogus-request? [{method :method}]
+  (not (in? allowed-methods method)))
 
 (defn with-allowed-methods [handler]
   (fn [request]
