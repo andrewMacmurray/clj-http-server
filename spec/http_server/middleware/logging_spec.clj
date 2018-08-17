@@ -1,7 +1,7 @@
 (ns http-server.middleware.logging-spec
   (:require [speclj.core :refer :all]
-            [clj-http-server.utils.logging :refer :all]
-            [clj-http-server.middleware.logging :refer :all]))
+            [http-server.utils.logging :refer :all]
+            [http-server.middleware.logging :refer :all]))
 
 (defn handler [request]
   {:status 200})
